@@ -1,0 +1,5 @@
+= jstats
+
+Generate this with
+    jstats rdoc
+After you have described your command line interface

@@ -1,0 +1,89 @@
+#!/usr/bin/env ruby
+# 1.9 adds realpath to resolve symlinks; 1.8 doesn't
+# have this method, so we add it so we get resolved symlinks
+# and compatibility
+unless File.respond_to? :realpath
+  class File #:nodoc:
+    def self.realpath path
+      return realpath(File.readlink(path)) if symlink?(path)
+      path
+    end
+  end
+end
+$: << File.expand_path(File.dirname(File.realpath(__FILE__)) + '/../lib')
+require 'rubygems'
+require 'terminal-table'
+require 'gli'
+require 'jstats_version'
+
+include GLI
+
+program_desc 'Describe your application here'
+
+version Jstats::VERSION
+
+desc 'Describe some switch here'
+switch [:s,:switch]
+
+desc 'Describe some flag here'
+default_value 'the default'
+arg_name 'The name of the argument'
+flag [:f,:flagname]
+
+desc 'Describe loc here'
+arg_name 'Describe arguments to loc here'
+command :loc do |c|
+  c.desc 'Describe a switch to loc'
+  c.switch :s
+
+  c.desc 'Describe a flag to loc'
+  c.default_value 'default'
+  c.flag :f
+  c.action do |global_options,options,args|
+    java_files_path = args.map {|path| Dir.glob("#{path}/**/*.java")}.flatten
+    total_count = comments_count = empty_count = 0
+    java_files_path.each {|path|
+      File.open(path, "r").each {|line| 
+        if line.strip.empty? then empty_count = empty_count + 1 end
+        if /^\s*\/\/|^\s*\/\*|^\s*\*/.match(line) then comments_count = comments_count + 1 end
+        total_count = total_count + 1
+      }
+    }
+    code_count = total_count - comments_count - empty_count
+    
+    rows = []
+    rows << [code_count, comments_count, empty_count]
+    table = Terminal::Table.new :title => "Processing #{java_files_path.size} Java Files", :headings => ['Lines of code', 'Lines of comments', 'Blank lines' ], :rows => rows
+    puts table
+  end
+end
+
+desc 'Describe bigm here'
+arg_name 'Describe arguments to bigm here'
+command :bigm do |c|
+  c.action do |global_options,options,args|
+  end
+end
+
+pre do |global,command,options,args|
+  # Pre logic here
+  # Return true to proceed; false to abort and not call the
+  # chosen command
+  # Use skips_pre before a command to skip this block
+  # on that command only
+  true
+end
+
+post do |global,command,options,args|
+  # Post logic here
+  # Use skips_post before a command to skip this
+  # block on that command only
+end
+
+on_error do |exception|
+  # Error logic here
+  # return false to skip default error handling
+  true
+end
+
+exit GLI.run(ARGV)
