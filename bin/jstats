@@ -11,56 +11,69 @@ unless File.respond_to? :realpath
   end
 end
 $: << File.expand_path(File.dirname(File.realpath(__FILE__)) + '/../lib')
+
 require 'rubygems'
 require 'terminal-table'
 require 'gli'
+require 'javaparse'
 require 'jstats_version'
 
 include GLI
 
-program_desc 'Describe your application here'
+program_desc 'Ouputs from the command line stats about your Java projects'
 
 version Jstats::VERSION
 
-desc 'Describe some switch here'
-switch [:s,:switch]
+#desc 'Describe some switch here'
+#switch [:s,:switch]
 
-desc 'Describe some flag here'
-default_value 'the default'
-arg_name 'The name of the argument'
-flag [:f,:flagname]
+#desc 'Describe some flag here'
+#default_value 'the default'
+#arg_name 'The name of the argument'
+#flag [:f,:flagname]
 
-desc 'Describe loc here'
-arg_name 'Describe arguments to loc here'
+desc 'Overall lines lines count (code, comments, blank) and print a distribution of your files sizes'
+arg_name 'Location of your Java source files'
 command :loc do |c|
-  c.desc 'Describe a switch to loc'
-  c.switch :s
+  #c.desc 'Describe a switch to loc'
+  #c.switch :s
 
-  c.desc 'Describe a flag to loc'
-  c.default_value 'default'
-  c.flag :f
+  #c.desc 'Describe a flag to loc'
+  #c.default_value 'default'
+  #c.flag :f
   c.action do |global_options,options,args|
-    java_files_path = args.map {|path| Dir.glob("#{path}/**/*.java")}.flatten
-    total_count = comments_count = empty_count = 0
-    java_files_path.each {|path|
-      File.open(path, "r").each {|line| 
-        if line.strip.empty? then empty_count = empty_count + 1 end
-        if /^\s*\/\/|^\s*\/\*|^\s*\*/.match(line) then comments_count = comments_count + 1 end
-        total_count = total_count + 1
+    java_files = JavaParse::JavaFiles.new(*args)
+    files_count = java_files.count(:files)
+    distrib = {(0...100) => 0, (100...200) => 0, (200...300) => 0, (300...400) => 0, (400...500) => 0, 
+                (500...600) => 0, (600...700) => 0, (700...800) => 0, (800...900) => 0, (900...1000) => 0, (1000...5000) => 0 }
+    java_files.java_units.each { |unit|
+      file_line_count = unit.all_lines
+      distrib.each_key { |range| 
+        distrib[range] = distrib[range] + 1 if range.include? file_line_count
       }
     }
-    code_count = total_count - comments_count - empty_count
     
     rows = []
-    rows << [code_count, comments_count, empty_count]
-    table = Terminal::Table.new :title => "Processing #{java_files_path.size} Java Files", :headings => ['Lines of code', 'Lines of comments', 'Blank lines' ], :rows => rows
+    rows << [java_files.count(:all_lines), java_files.count(:loc), java_files.count(:cloc), java_files.count(:bloc)]
+    table = Terminal::Table.new :title => "Processing #{java_files.count} Java Files", :headings => ['All lines', 'Lines of code', 'Lines of comments', 'Blank lines' ], :rows => rows
+
+    distrib_rows = []
+    distrib.to_a.each { |d| distrib_rows << d}
+    
+    distrib_rows.each { |row|
+      row.push(sprintf('%.1f', (row[1] * 100) / files_count.to_f) + ' %')
+    }
+    
+    distrib_table = Terminal::Table.new :title => "Files size distribution", :headings => ['Lines range', 'Files in range', '  % ' ], :rows => distrib_rows
+
     puts table
+    puts distrib_table
   end
 end
 
-desc 'Describe bigm here'
-arg_name 'Describe arguments to bigm here'
-command :bigm do |c|
+desc 'Stats about methods sizes'
+arg_name 'TODO'
+command :methods do |c|
   c.action do |global_options,options,args|
   end
 end
