@@ -14,17 +14,17 @@ jstats is a command line tool that outputs in a friendly format statistics about
 
 To use the help
 
-	$ jstats help
+    $ jstats help
 	
 === Loc
 
 To use the Line Of Code command
 
-	$ jstats loc ~/projects/my-pet-app
+    $ jstats loc ~/projects/my-pet-app
 
 This will ouput figures about the lines of codes for your project
 
-	# +-----------+---------------+-------------------+-------------+
+    # +-----------+---------------+-------------------+-------------+
 	# |                  Processing 151 Java Files                  |
 	# +-----------+---------------+-------------------+-------------+
 	# | All lines | Lines of code | Lines of comments | Blank lines |
