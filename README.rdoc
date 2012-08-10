@@ -6,7 +6,7 @@ jstats is a command line tool that outputs in a friendly format statistics about
 
 == Installation
 
-	$ gem install jstats
+    $ gem install jstats
 
 == Usage
 
