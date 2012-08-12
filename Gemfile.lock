@@ -1,15 +1,16 @@
 PATH
   remote: .
   specs:
-    jstats (0.0.3)
+    jstats (0.0.4)
       gli
       javaparse
+      terminal-table
 
 GEM
   remote: http://rubygems.org/
   specs:
     gli (1.6.0)
-    javaparse (0.0.9)
+    javaparse (0.1.0)
     json (1.7.4)
     rake (0.9.2.2)
     rdoc (3.12)
