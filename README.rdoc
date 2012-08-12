@@ -2,11 +2,15 @@
 
 == Description
 
-jstats is a command line tool that outputs in a friendly format statistics about your Java projects
+jstats is a command line tool that outputs - in a friendly format - statistics about your Java projects
 
 == Installation
 
     $ gem install jstats
+
+To uninstall
+
+    $ gem uninstall jstats
 
 == Usage
 

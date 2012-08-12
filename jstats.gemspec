@@ -3,11 +3,10 @@ require File.join([File.dirname(__FILE__),'lib','jstats_version.rb'])
 spec = Gem::Specification.new do |s| 
   s.name = 'jstats'
   s.version = Jstats::VERSION
-  s.author = 'Your Name Here'
-  s.email = 'your@email.address.com'
-  s.homepage = 'http://your.website.com'
+  s.author = 'Simon Caplette'
+  s.homepage = 'https://github.com/simcap/jstats'
   s.platform = Gem::Platform::RUBY
-  s.summary = 'A description of your project'
+  s.summary = 'Outputs Java projects statistics from the command line'
 # Add your other files here if you make them
   s.files = %w(
 bin/jstats
@@ -23,4 +22,5 @@ lib/jstats_version.rb
   s.add_development_dependency('rdoc')
   s.add_runtime_dependency('gli')
   s.add_runtime_dependency('javaparse')
+  s.add_runtime_dependency('terminal-table')
 end

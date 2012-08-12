@@ -32,8 +32,8 @@ version Jstats::VERSION
 #arg_name 'The name of the argument'
 #flag [:f,:flagname]
 
-desc 'Overall lines lines count (code, comments, blank) and print a distribution of your files sizes'
-arg_name 'Location of your Java source files'
+desc 'Overall lines count (code, comments, blank) and output file sizes distribution'
+arg_name 'Java source files location'
 command :loc do |c|
   #c.desc 'Describe a switch to loc'
   #c.switch :s
