@@ -19,7 +19,7 @@ require 'javaparse'
 require 'jstats_version'
 require 'jstats/loc'
 
-include GLI
+include GLI::App
 
 program_desc 'Ouputs from the command line stats about your Java projects'
 
@@ -53,6 +53,14 @@ desc 'Stats about methods sizes'
 arg_name 'TODO'
 command :methods do |c|
   c.action do |global_options,options,args|
+    @java_files = JavaParse::JavaFiles.new(*args)
+    @java_files.each { |unit|
+        unless unit.methods.size == 0
+          puts "#{unit.unit_name} #{unit.loc} #{unit.methods.size}" 
+          puts unit.methods.map {|m| m.name}
+        end
+    }
+    
   end
 end
 
@@ -77,4 +85,4 @@ on_error do |exception|
   true
 end
 
-exit GLI.run(ARGV)
+exit run(ARGV)
