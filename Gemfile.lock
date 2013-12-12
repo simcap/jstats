@@ -7,7 +7,6 @@ PATH
       terminal-table
 
 GEM
-  remote: http://rubygems.org/
   specs:
     gli (2.0.0)
     javaparse (0.1.5)
